@@ -10,6 +10,7 @@
 class EventReceiver : public irr::IEventReceiver
 {
   irr::scene::ISceneNode *node;
+  irr::gui::IGUIEnvironment *gui;
   bool button_pressed;
   int  old_x, old_y;
   std::vector<irr::video::ITexture*> textures;
@@ -21,6 +22,7 @@ public:
   EventReceiver();
   bool OnEvent(const irr::SEvent &event);
   void set_node(irr::scene::ISceneNode *node);
+  void set_gui(irr::gui::IGUIEnvironment *g);
   void set_textures(const std::vector<irr::video::ITexture *> &tex){textures=tex;}
 };
 

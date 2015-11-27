@@ -32,19 +32,28 @@ bool EventReceiver::keyboard(const SEvent &event)
       case KEY_ESCAPE:
 	exit(0);
       case KEY_KEY_Z: // Avance
+    /* Personnage */
 	position.X += 1 * cos(rotation.Y * M_PI / 180.0);
 	position.Z += -1 * sin(rotation.Y * M_PI / 180.0);
 	break;
       case KEY_KEY_S: // Recule
+    /* Personnage */
 	position.X += -1 * cos(rotation.Y * M_PI / 180.0);
 	position.Z += 1 * sin(rotation.Y * M_PI / 180.0);
 	break;
       case KEY_KEY_D: // Tourne à droite
-	rotation.Y += 10;
+    /* Personnage */
+    rotation.Y += 10;
 	break;
       case KEY_KEY_Q: // Tourne à gauche
-	rotation.Y -= 10;
+    /* Personnage */
+    rotation.Y -= 10;
 	break;
+      case KEY_KEY_C: // Affichage du stuff
+    /* Ouverture de la fenêtre affichant son sac a dos */
+    // Une fenêtre pour différents réglages
+    //create_window(gui);
+    break;
       default:;
     }
     node->setPosition(position);
@@ -114,4 +123,12 @@ bool EventReceiver::OnEvent(const SEvent &event)
 void EventReceiver::set_node(irr::scene::ISceneNode *n)
 {
   node = n;
+}
+
+/**************************************************************************\
+ * EventReceiver::set_gui                                                 *
+\**************************************************************************/
+void EventReceiver::set_gui(irr::gui::IGUIEnvironment *g)
+{
+  gui = g;
 }
