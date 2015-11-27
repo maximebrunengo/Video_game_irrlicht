@@ -76,7 +76,7 @@ bool EventReceiver::mouse(const SEvent &event)
 	rotation.Y -= (event.MouseInput.X - old_x);
 	old_x = event.MouseInput.X;
 	old_y = event.MouseInput.Y;
-	node->setRotation(rotation);
+	//node->setRotation(rotation);
       }
       break;
     case EMIE_MOUSE_WHEEL:
