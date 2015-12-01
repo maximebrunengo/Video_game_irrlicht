@@ -14,7 +14,7 @@ namespace iv = irr::video;
  * EventReceiver::EventReceiver                                           *
 \**************************************************************************/
 EventReceiver::EventReceiver()
-  : node(nullptr), button_pressed(false), current_texture(0)
+  : node(nullptr),camera(nullptr), button_pressed(false), current_texture(0)
 {
 }
 
@@ -58,6 +58,8 @@ bool EventReceiver::keyboard(const SEvent &event)
     }
     node->setPosition(position);
     node->setRotation(rotation);
+    //mise a jour de la target de la camera (suivi du personnage en temps réel)
+    camera->setTarget(position);
   }
 
   return false;
@@ -88,10 +90,10 @@ bool EventReceiver::mouse(const SEvent &event)
 	//node->setRotation(rotation);
       }
       break;
-    /*case EMIE_MOUSE_WHEEL:
-      current_texture = (current_texture + 1) % textures.size();
-      node->setMaterialTexture(0, textures[current_texture]);
-      break;*/
+    case EMIE_MOUSE_WHEEL:
+//      current_texture = (current_texture + 1) % textures.size();
+//      node->setMaterialTexture(0, textures[current_texture]);
+      break;
     default:
       ;
   }
@@ -131,4 +133,12 @@ void EventReceiver::set_node(irr::scene::ISceneNode *n)
 void EventReceiver::set_gui(irr::gui::IGUIEnvironment *g)
 {
   gui = g;
+}
+
+/**************************************************************************\
+ * EventReceiver::set_camera                                              *
+\**************************************************************************/
+void EventReceiver::set_camera(irr::scene::ICameraSceneNode *c)
+{
+  camera = c;
 }
