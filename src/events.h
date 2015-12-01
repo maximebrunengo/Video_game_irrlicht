@@ -11,6 +11,7 @@ class EventReceiver : public irr::IEventReceiver
 {
   irr::scene::ISceneNode *node;
   irr::gui::IGUIEnvironment *gui;
+  irr::scene::ICameraSceneNode *camera;
   bool button_pressed;
   int  old_x, old_y;
   std::vector<irr::video::ITexture*> textures;
@@ -23,6 +24,7 @@ public:
   bool OnEvent(const irr::SEvent &event);
   void set_node(irr::scene::ISceneNode *node);
   void set_gui(irr::gui::IGUIEnvironment *g);
+  void set_camera(irr::scene::ICameraSceneNode *c);
   void set_textures(const std::vector<irr::video::ITexture *> &tex){textures=tex;}
 };
 
