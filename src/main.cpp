@@ -9,6 +9,7 @@ namespace is = irr::scene;
 namespace iv = irr::video;
 namespace ig = irr::gui;
 
+void createtree(is::IAnimatedMesh *mesh, is::ISceneManager *smgr, EventReceiver receiver, iv::IVideoDriver  *driver);
 
 int main()
 {
@@ -50,6 +51,8 @@ int main()
 
         }
     }
+    //ajout arbre via une fonction
+   createtree(mesh, smgr,receiver,driver);
 
   // Ajout du cube à la scène
   is::IAnimatedMeshSceneNode *node_personnage;
@@ -85,4 +88,27 @@ int main()
 
   return 0;
 }
+
+void createtree(is::IAnimatedMesh *mesh, is::ISceneManager *smgr, EventReceiver receiver, iv::IVideoDriver  *driver)
+{
+    std::vector<iv::ITexture*> textures;
+    is::IAnimatedMeshSceneNode *node_arbre;
+    int i = 10;
+    int j = 10;
+    int id=0;
+
+    for (int k = 0 ; k < 15 ; k ++)
+    {
+	node_arbre = smgr->addAnimatedMeshSceneNode(mesh,nullptr,id);
+	node_arbre->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	node_arbre->setPosition (core::vector3df(i,k,j));
+	textures.push_back(driver->getTexture("data/tree.jpg"));
+	node_arbre->setMaterialTexture(0, textures[0]);
+	receiver.set_node(node_arbre);
+	receiver.set_textures(textures);
+	id++;
+    }
+
+}
+
 
