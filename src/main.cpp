@@ -99,7 +99,7 @@ int main()
     //son parent est donc le noeud qui definit le personnage
     //deuxieme paramètre:position de la camera (look From)
     //troisieme paramètre: look at (ici c'est la position du personnage) mise a jour dans event.cpp
-    is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_personnage, ic::vector3df(-5,3,-5), node_personnage->getPosition());
+    is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_personnage, ic::vector3df(-5,3,0), node_personnage->getPosition());
     receiver.set_camera(camera);
 
     // La barre de menu
