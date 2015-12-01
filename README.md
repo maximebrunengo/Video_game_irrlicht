@@ -8,3 +8,9 @@ How to run it:
 - ./Video_game
 
 (.o are created in the Build repository and the .exe in the root)
+
+How to push it
+
+- git status
+- git commit -m 'titre' 
+- git push origin branche 

@@ -88,10 +88,10 @@ bool EventReceiver::mouse(const SEvent &event)
 	//node->setRotation(rotation);
       }
       break;
-    case EMIE_MOUSE_WHEEL:
+    /*case EMIE_MOUSE_WHEEL:
       current_texture = (current_texture + 1) % textures.size();
       node->setMaterialTexture(0, textures[current_texture]);
-      break;
+      break;*/
     default:
       ;
   }
