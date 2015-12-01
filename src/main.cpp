@@ -66,9 +66,14 @@ int main()
 
   receiver.set_gui(gui_game);
 
-  //smgr->addCameraSceneNode(nullptr, ic::vector3df(0, 30, -40), ic::vector3df(0, 5, 0));
-  is::ICameraSceneNode *camera = smgr->addCameraSceneNodeMaya();
-  camera->setTarget(node_personnage->getPosition());
+  //caméra qui va suivre notre personnage
+
+  //son parent est donc le noeud qui definit le personnage
+  //deuxieme paramètre:position de la camera (look From)
+  //troisieme paramètre: look at (ici c'est la position du personnage) mise a jour dans event.cpp
+  is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_personnage, ic::vector3df(-5,3,-5), node_personnage->getPosition());
+  receiver.set_camera(camera);
+
 
   // La barre de menu
   gui_game::create_menu(gui_game);
