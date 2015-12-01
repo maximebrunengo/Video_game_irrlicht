@@ -91,8 +91,8 @@ bool EventReceiver::mouse(const SEvent &event)
       }
       break;
     case EMIE_MOUSE_WHEEL:
-      current_texture = (current_texture + 1) % textures.size();
-      node->setMaterialTexture(0, textures[current_texture]);
+//      current_texture = (current_texture + 1) % textures.size();
+//      node->setMaterialTexture(0, textures[current_texture]);
       break;
     default:
       ;
