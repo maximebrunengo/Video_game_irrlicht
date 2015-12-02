@@ -11,8 +11,8 @@ namespace ig = irr::gui;
 
 
 is::ITriangleSelector* createTree(is::IAnimatedMesh *mesh, is::ISceneManager *smgr, EventReceiver receiver, iv::IVideoDriver  *driver);
-void createColumn(int position_x, int position_z, int height, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver);
-void createMountain(int nbMountains, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver);
+is::ITriangleSelector*  createColumn(int position_x, int position_z, int height, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver);
+is::ITriangleSelector* createMountain(int nbMountains, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver);
 
 int main()
 {
@@ -72,7 +72,8 @@ int main()
 
     //Ajout de refliefs sur la scene
     int nbMountains = 2;
-    createMountain(nbMountains, node, mesh, smgr, textures, receiver);
+    is::ITriangleSelector* selector2 = createMountain(nbMountains, node, mesh, smgr, textures, receiver);
+    metaselector->addTriangleSelector(selector2);
 
     // Ajout du cube à la scène
     is::IAnimatedMeshSceneNode *node_personnage;
@@ -155,10 +156,13 @@ is::ITriangleSelector* createTree(is::IAnimatedMesh *mesh, is::ISceneManager *sm
 }
 
 //Create a moutain
-void createMountain(int nbMountains, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver)
+is::ITriangleSelector* createMountain(int nbMountains, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver)
 {
     int Ni=100;
     int Nj=100;
+
+    is::ITriangleSelector *selector;
+    is::IMetaTriangleSelector *metaselector = smgr-> createMetaTriangleSelector();
 
     for(int i = 0; i<nbMountains; ++i)
     {
@@ -173,8 +177,10 @@ void createMountain(int nbMountains, is::IAnimatedMeshSceneNode *node, is::IAnim
             for (int x=position_x; x<position_x+delta; ++x)
             {
                 for(int z=position_z; z<position_z+delta; ++z)
-                {
-                    createColumn(x, z, height, node, mesh, smgr, textures, receiver);
+		{
+		    selector = createColumn(x, z, height, node, mesh, smgr, textures, receiver);
+
+		    metaselector->addTriangleSelector(selector);
                 }
             }
             position_x++;
@@ -183,11 +189,16 @@ void createMountain(int nbMountains, is::IAnimatedMeshSceneNode *node, is::IAnim
             delta-=2;
         }
     }
+    return metaselector;
 }
 
+
 // Given a position on the scene, add cubes to go to the given height
-void createColumn(int position_x, int position_z, int height, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver)
+is::ITriangleSelector* createColumn(int position_x, int position_z, int height, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver)
 {
+    is::ITriangleSelector *selector;
+    is::IMetaTriangleSelector *metaselector = smgr-> createMetaTriangleSelector();
+
     for(int i=1; i<height; ++i)
     {
         node = smgr->addAnimatedMeshSceneNode(mesh, nullptr, position_x+i+position_z);
@@ -197,7 +208,13 @@ void createColumn(int position_x, int position_z, int height, is::IAnimatedMeshS
         node->setMaterialTexture(0, textures[0]);
         receiver.set_node(node);
         receiver.set_textures(textures);
+
+	selector = smgr->createTriangleSelector(node->getMesh(),node);
+	node ->setTriangleSelector (selector);
+
+	 metaselector->addTriangleSelector(selector);
     }
+    return metaselector;
 }
 
 
