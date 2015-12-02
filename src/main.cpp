@@ -34,7 +34,11 @@ int main()
     textures.push_back(driver->getTexture("data/TXsQk.png"));
 
     // Chargement du cube
-    is::IAnimatedMesh *mesh = smgr->getMesh("data/cube.3ds");
+   is::IAnimatedMesh *mesh = smgr->getMesh("data/cube.obj");
+
+    //chargement du santaclaus
+    is::IAnimatedMesh *mesh_santaclaus = smgr->getMesh("data/Steve.obj");
+
 
     // Ajout de la scène
     is::IAnimatedMeshSceneNode *node;
@@ -71,12 +75,12 @@ int main()
 
 
     //Ajout de refliefs sur la scene
-    int nbMountains = 2;
+   int nbMountains = 2;
     is::ITriangleSelector* selector2 = createMountain(nbMountains, node, mesh, smgr, textures, receiver);
     metaselector->addTriangleSelector(selector2);
 
     // Ajout du cube à la scène
-    is::IAnimatedMeshSceneNode *node_personnage;
+  is::IAnimatedMeshSceneNode *node_personnage;
     node_personnage = smgr->addAnimatedMeshSceneNode(mesh);
     node_personnage->setMaterialFlag(irr::video::EMF_LIGHTING, false);
     node_personnage->setPosition(core::vector3df(20, 10, 20));
@@ -85,22 +89,35 @@ int main()
     receiver.set_node(node_personnage);
     receiver.set_textures(textures);
 
+    //ajout santaclaus à la scene
+    is::IAnimatedMeshSceneNode *node_santaclaus;
+    node_santaclaus = smgr->addAnimatedMeshSceneNode(mesh_santaclaus);
+    node_santaclaus->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+    node_santaclaus->setPosition(core::vector3df(20, 2, 30));
+    textures.push_back(driver->getTexture("data/Santa.png"));
+    node_santaclaus->setMaterialTexture(0, textures.back());
+    receiver.set_node(node_santaclaus);
+    receiver.set_textures(textures);
+
+
+
+
     receiver.set_gui(gui_game);
 
     //Gestion collision
     is::ISceneNodeAnimator *anim;
-    anim = smgr ->createCollisionResponseAnimator(metaselector, node_personnage,
+    anim = smgr ->createCollisionResponseAnimator(metaselector, node_santaclaus,
                                                   ic::vector3df(1, 1, 1), //Rayon de la cam
                                                   ic::vector3df(0, -10, 0),  //gravité
                                                   ic::vector3df(0, 0, 0));  // décalage du centre
-    node_personnage->addAnimator(anim);
+    node_santaclaus->addAnimator(anim);
 
     //caméra qui va suivre notre personnage
 
     //son parent est donc le noeud qui definit le personnage
     //deuxieme paramètre:position de la camera (look From)
     //troisieme paramètre: look at (ici c'est la position du personnage) mise a jour dans event.cpp
-    is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_personnage, ic::vector3df(-5,3,0), node_personnage->getPosition());
+    is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_santaclaus, ic::vector3df(-20,10,0), node_santaclaus->getPosition());
     receiver.set_camera(camera);
 
     // La barre de menu
@@ -177,10 +194,10 @@ is::ITriangleSelector* createMountain(int nbMountains, is::IAnimatedMeshSceneNod
             for (int x=position_x; x<position_x+delta; ++x)
             {
                 for(int z=position_z; z<position_z+delta; ++z)
-		{
-		    selector = createColumn(x, z, height, node, mesh, smgr, textures, receiver);
+                {
+                    selector = createColumn(x, z, height, node, mesh, smgr, textures, receiver);
 
-		    metaselector->addTriangleSelector(selector);
+                    metaselector->addTriangleSelector(selector);
                 }
             }
             position_x++;
@@ -209,10 +226,10 @@ is::ITriangleSelector* createColumn(int position_x, int position_z, int height, 
         receiver.set_node(node);
         receiver.set_textures(textures);
 
-	selector = smgr->createTriangleSelector(node->getMesh(),node);
-	node ->setTriangleSelector (selector);
+        selector = smgr->createTriangleSelector(node->getMesh(),node);
+        node ->setTriangleSelector (selector);
 
-	 metaselector->addTriangleSelector(selector);
+        metaselector->addTriangleSelector(selector);
     }
     return metaselector;
 }
