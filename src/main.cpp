@@ -39,6 +39,9 @@ int main()
     //chargement du santaclaus
     is::IAnimatedMesh *mesh_santaclaus = smgr->getMesh("data/Steve.obj");
 
+    //chargement du tree
+    is::IAnimatedMesh *mesh_tree = smgr->getMesh("data/lowpolytree.obj");
+
 
     // Ajout de la scène
     is::IAnimatedMeshSceneNode *node;
@@ -70,8 +73,8 @@ int main()
         }
     }
 
-    is::ITriangleSelector* selector1 = createTree(mesh, smgr,receiver,driver);
-    metaselector->addTriangleSelector(selector1);
+    //is::ITriangleSelector* selector1 = createTree(mesh, smgr,receiver,driver);
+    //metaselector->addTriangleSelector(selector1);
 
 
     //Ajout de refliefs sur la scene
@@ -80,14 +83,22 @@ int main()
     metaselector->addTriangleSelector(selector2);
 
     // Ajout du cube à la scène
-  is::IAnimatedMeshSceneNode *node_personnage;
+    /*is::IAnimatedMeshSceneNode *node_personnage;
     node_personnage = smgr->addAnimatedMeshSceneNode(mesh);
     node_personnage->setPosition(core::vector3df(20, 10, 20));
     textures.push_back(driver->getTexture("data/rouge.jpg"));
     node_personnage->setMaterialTexture(0, textures.back());
     node_personnage->setMaterialFlag(irr::video::EMF_LIGHTING, false);
     receiver.set_node(node_personnage);
-    receiver.set_textures(textures);
+    receiver.set_textures(textures);*/
+
+    //ajout tree à la scene
+    is::IAnimatedMeshSceneNode *node_tree;
+    node_tree = smgr->addAnimatedMeshSceneNode(mesh_tree);
+    node_tree->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+    node_tree->setPosition(core::vector3df(30, 6, 50));
+   node_tree->setScale(core::vector3df(1.5,1.5,1.5));
+    receiver.set_node(node_tree);
 
     //ajout santaclaus à la scene
     is::IAnimatedMeshSceneNode *node_santaclaus;
@@ -96,8 +107,12 @@ int main()
     node_santaclaus->setPosition(core::vector3df(20, 2, 30));
     textures.push_back(driver->getTexture("data/Santa.png"));
     node_santaclaus->setMaterialTexture(0, textures.back());
+    node_santaclaus->setScale(core::vector3df(0.5,0.5,0.5));
     receiver.set_node(node_santaclaus);
     receiver.set_textures(textures);
+
+
+
 
 
 
@@ -117,7 +132,7 @@ int main()
     //son parent est donc le noeud qui definit le personnage
     //deuxieme paramètre:position de la camera (look From)
     //troisieme paramètre: look at (ici c'est la position du personnage) mise a jour dans event.cpp
-    is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_santaclaus, ic::vector3df(-20,10,0), node_santaclaus->getPosition());
+    is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_santaclaus, ic::vector3df(20,10,0), node_santaclaus->getPosition());
     receiver.set_camera(camera);
 
     // La barre de menu
@@ -149,7 +164,9 @@ is::ITriangleSelector* createTree(is::IAnimatedMesh *mesh, is::ISceneManager *sm
     int j = 10;
 
     is::ITriangleSelector *selector;
-    is::IMetaTriangleSelector *metaselector = smgr-> createMetaTriangleSelector();;
+    is::IMetaTriangleSelector *
+
+            metaselector = smgr-> createMetaTriangleSelector();;
 
     for (int k = 0 ; k < 15 ; k ++)
     {
