@@ -54,6 +54,9 @@ bool EventReceiver::keyboard(const SEvent &event)
     // Une fenêtre pour différents réglages
     //create_window(gui);
     break;
+    case KEY_SPACE:
+        position.Y +=10;
+    break;
       default:;
     }
     node->setPosition(position);
