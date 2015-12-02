@@ -34,12 +34,12 @@ bool EventReceiver::keyboard(const SEvent &event)
       case KEY_KEY_Z: // Avance
     /* Personnage */
     position.X += 1 * cos(rotation.Y * M_PI / 180.0);
-    position.Z += 1 * sin(rotation.Y * M_PI / 180.0);
+    position.Z += -1 * sin(rotation.Y * M_PI / 180.0);
 	break;
       case KEY_KEY_S: // Recule
     /* Personnage */
 	position.X += -1 * cos(rotation.Y * M_PI / 180.0);
-    position.Z += -1 * sin(rotation.Y * M_PI / 180.0);
+    position.Z += 1 * sin(rotation.Y * M_PI / 180.0);
 	break;
       case KEY_KEY_D: // Tourne à droite
     /* Personnage */
@@ -60,6 +60,7 @@ bool EventReceiver::keyboard(const SEvent &event)
     node->setRotation(rotation);
     //mise a jour de la target de la camera (suivi du personnage en temps réel)
     camera->setTarget(position);
+
   }
 
   return false;
