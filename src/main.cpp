@@ -78,10 +78,10 @@ int main()
     // Ajout du cube à la scène
     is::IAnimatedMeshSceneNode *node_personnage;
     node_personnage = smgr->addAnimatedMeshSceneNode(mesh);
-    node_personnage->setMaterialFlag(irr::video::EMF_LIGHTING, false);
     node_personnage->setPosition(core::vector3df(20, 10, 20));
     textures.push_back(driver->getTexture("data/rouge.jpg"));
     node_personnage->setMaterialTexture(0, textures.back());
+    node_personnage->setMaterialFlag(irr::video::EMF_LIGHTING, false);
     receiver.set_node(node_personnage);
     receiver.set_textures(textures);
 
