@@ -2,6 +2,7 @@
 #include "events.h"
 #include "gui_game.h"
 
+
 using namespace irr;
 
 namespace ic = irr::core;
@@ -15,7 +16,7 @@ is::ITriangleSelector*  createColumn(int position_x, int position_z, int height,
 is::ITriangleSelector* createMountain(int nbMountains, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver);
 
 const int ID = 40;
-const int cpt = 0;
+
 
 int main()
 {
@@ -97,18 +98,21 @@ int main()
     is::IAnimatedMeshSceneNode *node_tree;
     int Nl = 7;
     int Nk = 7;
+    int pos_x;
+    int pos_y;
 
     for (int l=0; l<Nl; l++)
     {
 	for (int k=0; k<Nk; k++)
-	{
+	{	     
+	    pos_x = rand()%Nl + 8*l;
+	    pos_y = rand()%Nk + 5*k;
+
 	    node_tree = smgr->addAnimatedMeshSceneNode(mesh_tree,nullptr, l+k);
 	    node_tree->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-	    node_tree->setPosition(core::vector3df(10+4*l, 4.3, 60+4*k));//30+4*l, 4.3, 5+4*l));
+	    node_tree->setPosition(core::vector3df(pos_x, 4.3,pos_y));//30+4*l, 4.3, 5+4*l));
 	    node_tree->setScale(core::vector3df(1.5,1.5,1.5));
 	    receiver.set_node(node_tree);
-
-	    //node_tree->setDebugDataVisible(is::EDS_NORMALS);
 
 	    //selector sur l'arbre
 	    is::ITriangleSelector *selector = smgr->createTriangleSelector(mesh_tree,node_tree);
@@ -125,7 +129,7 @@ int main()
     is::IAnimatedMeshSceneNode *node_santaclaus;
     node_santaclaus = smgr->addAnimatedMeshSceneNode(mesh_santaclaus);
     node_santaclaus->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-    node_santaclaus->setPosition(core::vector3df(20, 2, 30));
+    node_santaclaus->setPosition(core::vector3df(20,2,60)); //20, 2, 30));
     textures.push_back(driver->getTexture("data/Santa.png"));
     node_santaclaus->setMaterialTexture(0, textures.back());
     node_santaclaus->setScale(core::vector3df(0.5,0.5,0.5));
@@ -183,7 +187,6 @@ int main()
 	  if (selected_scene_node)
 	  {
 	    selected_scene_node->setVisible(false);
-	    cpt ++;
 	  }
 
 	}
