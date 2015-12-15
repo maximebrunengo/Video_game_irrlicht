@@ -4,7 +4,7 @@ THE WOOD CUTER SANTA CLAUS
 
 Rules:
 
-- Objective: Build your traineau in order to be ready to deliver all gifts for Xmas
+- Objective: Build the Santa Claus's sleigh in order to deliver all gifts for Xmas
 - Clic on trees, you want to cut
 - you can move, with the keys z, s, q, d
 
