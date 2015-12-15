@@ -19,6 +19,7 @@ is::ITriangleSelector* createMountain(int nbMountains, is::IAnimatedMeshSceneNod
 const int ID = 40;
 
 
+
 int main()
 {
     // Le gestionnaire d'événements
@@ -203,7 +204,9 @@ int main()
     //declaration du vecteur position necessaire a la gestion du game over
     ic::vector3df pos;
     iv::ITexture* image_gameover = driver->getTexture("data/gameover.jpg");
-   iv::ITexture* image_start = driver->getTexture("data/Start.png");
+    iv::ITexture* image_start = driver->getTexture("data/Start.png");
+    iv::ITexture* image_win = driver->getTexture("data/Santa-In-Sleigh.jpg");
+    int compteur_arbres_coupes = 0;
 
 
     while(device->run())
@@ -230,6 +233,7 @@ int main()
 	  if (selected_scene_node)
 	  {
 	    selected_scene_node->setVisible(false);
+        compteur_arbres_coupes ++;
 	  }
 
 	}
@@ -240,22 +244,18 @@ int main()
         gui_game->drawAll();
 
         //gestion Début de Jeu
+
         //affichage d'une image de debut
 	if( pos.X == 20 && pos.Z == 60)
         {
-
-
             driver->draw2DImage(image_start, core::position2d<s32>(80,80),
                          core::rect<s32>(0,0,480,271), 0,
                          video::SColor(255,255,255,255), true);
-
-
-
         }
 
 
-
         //game over "sortie du plateau de jeu"
+
         //on peut le rendre plus robuste en ragardant les limites x et z du plateau
         //ICI j'utilise l'altitude du personnage
 
@@ -270,7 +270,17 @@ int main()
 
             if(pos.Y < -100) exit(0); //on quite le jeu
             // Amelioration: a la placve de quiter le jeu on attend un clique souris ou clavier pour se remmetre en position initiale
+        }
 
+        //WIN
+
+        //Vous avez assez coupé d'arbres pour construire le traineau
+
+        if(compteur_arbres_coupes == 12)
+        {
+            driver->draw2DImage(image_win, core::position2d<s32>(80,80),
+                         core::rect<s32>(0,0,800,600), 0,
+                         video::SColor(255,255,255,255), true);
 
         }
 
