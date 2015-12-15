@@ -118,6 +118,7 @@ int main()
 
 
 
+
     receiver.set_gui(gui_game);
 
     //Gestion collision
@@ -135,6 +136,42 @@ int main()
     //troisieme paramètre: look at (ici c'est la position du personnage) mise a jour dans event.cpp
     is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_santaclaus, ic::vector3df(20,10,0), node_santaclaus->getPosition());
     receiver.set_camera(camera);
+
+
+    /*
+     *
+     * Tempete de neige, fait appel à la création particulaire
+     * special thanks :) http://jeux.developpez.com/tutoriels/Irrlicht/8-effets-speciaux/
+     **/
+
+      // crée un système de particule
+
+          is::IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(true);
+
+          is::IParticleEmitter* em = ps->createBoxEmitter(
+              ic::aabbox3d<f32>(0,20,0,10,0,30), // taille de l'émetteur
+              ic::vector3df(0.0f,0.0f,0.0f),   // position initiale
+              80,20,                             // taux d'émission
+              iv::SColor(0,0,0,0),       // la couleur la plus sombre
+              iv::SColor(0,255,255,255),       // la couleur la plus lumineuse
+              100,200,0,                         // minimum et maximum âge, angle  ICI on choisi des valeurs mini et maxi faibles pour voir au travers de la tempete mais linconvenient c'est la rapidite des la neige
+              ic::dimension2df(10.f,10.f),         // taille minimum
+              ic::dimension2df(20.f,20.f));        // taille maximum
+
+          ps->setEmitter(em); // Ceci prend l'émetteur
+          em->drop(); // Donc on peut le jeter sans qu'il soit supprimé.
+
+          is::IParticleAffector* paf = ps->createFadeOutParticleAffector();
+
+          ps->addAffector(paf); // de même pour l'affecteur
+          paf->drop();
+
+          ps->setPosition(core::vector3df(0,0,0));
+          ps->setScale(core::vector3df(2,2,2));
+          ps->setMaterialFlag(video::EMF_LIGHTING, false);
+          ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+          ps->setMaterialTexture(0, driver->getTexture("data/7.jpg"));
+          ps->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
 
     // La barre de menu
     gui_game::create_menu(gui_game);
