@@ -1,6 +1,7 @@
 #include <irrlicht.h>
 #include "events.h"
 #include "gui_game.h"
+#include <iostream>
 
 using namespace irr;
 
@@ -138,6 +139,10 @@ int main()
     // La barre de menu
     gui_game::create_menu(gui_game);
 
+    //declaration du vecteur position necessaire a la gestion du game over
+    ic::vector3df pos;
+    iv::ITexture* image_gameover = driver->getTexture("data/gameover.jpg");
+
     while(device->run())
     {
 
@@ -148,7 +153,28 @@ int main()
         // Dessin de l'interface utilisateur :
         gui_game->drawAll();
 
+        //game over "sortie du plateau de jeu"
+        //on peut le rendre plus robuste en ragardant les limites x et z du plateau
+        //ICI j'utilise l'altitude du personnage
+
+        //mise a jour de la postion du personnage  en continu
+        pos = node_santaclaus->getPosition();
+        if (pos.Y < -5) //condition de game over
+        {
+            std::cout<<"GAME oVER"<<std::endl;
+            driver->draw2DImage(image_gameover, core::position2d<s32>(80,80),
+                         core::rect<s32>(0,0,480,360), 0,
+                         video::SColor(255,255,255,255), true);
+
+            if(pos.Y < -100) exit(0); //on quite le jeu
+            // Amelioration: a la placve de quiter le jeu on attend un clique souris ou clavier pour se remmetre en position initiale
+
+
+        }
+
         driver->endScene();
+
+
 
     }
     device->drop();
@@ -250,5 +276,4 @@ is::ITriangleSelector* createColumn(int position_x, int position_z, int height, 
     }
     return metaselector;
 }
-
 
