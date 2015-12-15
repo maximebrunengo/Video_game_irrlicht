@@ -179,16 +179,35 @@ int main()
     //declaration du vecteur position necessaire a la gestion du game over
     ic::vector3df pos;
     iv::ITexture* image_gameover = driver->getTexture("data/gameover.jpg");
+   iv::ITexture* image_start = driver->getTexture("data/Start.png");
+
 
     while(device->run())
     {
 
         driver->beginScene(true, true, iv::SColor(0,50,100,255));
 
+
         // Dessin de la scène :
         smgr->drawAll();
         // Dessin de l'interface utilisateur :
         gui_game->drawAll();
+
+        //gestion Début de Jeu
+        //affichage d'une image de debut
+        if( pos.X == 20 && pos.Z == 30)
+        {
+
+
+            driver->draw2DImage(image_start, core::position2d<s32>(80,80),
+                         core::rect<s32>(0,0,480,271), 0,
+                         video::SColor(255,255,255,255), true);
+
+
+
+        }
+
+
 
         //game over "sortie du plateau de jeu"
         //on peut le rendre plus robuste en ragardant les limites x et z du plateau
