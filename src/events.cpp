@@ -147,3 +147,17 @@ void EventReceiver::set_camera(irr::scene::ICameraSceneNode *c)
 {
   camera = c;
 }
+
+/**************************************************************************\
+ * EventReceiver::is_mouse_pressed                                        *
+\**************************************************************************/
+bool EventReceiver::is_mouse_pressed(int &x, int &y)
+{
+  if (button_pressed)
+  {
+    x = old_x;
+    y = old_y;
+    return true;
+  }
+  return false;
+}

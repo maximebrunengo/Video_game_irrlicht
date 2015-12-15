@@ -19,8 +19,10 @@ class EventReceiver : public irr::IEventReceiver
 
   bool keyboard(const irr::SEvent &event);
   bool mouse(const irr::SEvent &event);
+
 public:
   EventReceiver();
+  bool is_mouse_pressed(int &x, int &y);
   bool OnEvent(const irr::SEvent &event);
   void set_node(irr::scene::ISceneNode *node);
   void set_gui(irr::gui::IGUIEnvironment *g);

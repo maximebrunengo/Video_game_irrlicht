@@ -3,6 +3,7 @@
 #include "gui_game.h"
 #include <iostream>
 
+
 using namespace irr;
 
 namespace ic = irr::core;
@@ -14,6 +15,9 @@ namespace ig = irr::gui;
 is::ITriangleSelector* createTree(is::IAnimatedMesh *mesh, is::ISceneManager *smgr, EventReceiver receiver, iv::IVideoDriver  *driver);
 is::ITriangleSelector*  createColumn(int position_x, int position_z, int height, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver);
 is::ITriangleSelector* createMountain(int nbMountains, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver);
+
+const int ID = 40;
+
 
 int main()
 {
@@ -42,7 +46,6 @@ int main()
 
     //chargement du tree
     is::IAnimatedMesh *mesh_tree = smgr->getMesh("data/lowpolytree.obj");
-
 
     // Ajout de la scène
     is::IAnimatedMeshSceneNode *node;
@@ -77,9 +80,8 @@ int main()
     //is::ITriangleSelector* selector1 = createTree(mesh, smgr,receiver,driver);
     //metaselector->addTriangleSelector(selector1);
 
-
-    //Ajout de refliefs sur la scene
-   int nbMountains = 2;
+    //Ajout de reliefs sur la scene
+    int nbMountains = 2;
     is::ITriangleSelector* selector2 = createMountain(nbMountains, node, mesh, smgr, textures, receiver);
     metaselector->addTriangleSelector(selector2);
 
@@ -93,31 +95,47 @@ int main()
     receiver.set_node(node_personnage);
     receiver.set_textures(textures);*/
 
-    //ajout tree à la scene
+    //ajout tree (ou une forêt)  à la scene
     is::IAnimatedMeshSceneNode *node_tree;
-    node_tree = smgr->addAnimatedMeshSceneNode(mesh_tree);
-    node_tree->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-    node_tree->setPosition(core::vector3df(30, 6, 50));
-   node_tree->setScale(core::vector3df(1.5,1.5,1.5));
-    receiver.set_node(node_tree);
+    int Nl = 7;
+    int Nk = 7;
+    int pos_x;
+    int pos_y;
+
+    for (int l=0; l<Nl; l++)
+    {
+	for (int k=0; k<Nk; k++)
+	{	     
+	    pos_x = rand()%Nl + 8*l;
+	    pos_y = rand()%Nk + 5*k;
+
+	    node_tree = smgr->addAnimatedMeshSceneNode(mesh_tree,nullptr, l+k);
+	    node_tree->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	    node_tree->setPosition(core::vector3df(pos_x, 4.3,pos_y));//30+4*l, 4.3, 5+4*l));
+	    node_tree->setScale(core::vector3df(1.5,1.5,1.5));
+	    receiver.set_node(node_tree);
+
+	    //selector sur l'arbre
+	    is::ITriangleSelector *selector = smgr->createTriangleSelector(mesh_tree,node_tree);
+	    node_tree->setTriangleSelector(selector);
+	    selector->drop();
+	    node_tree->setID(ID);
+
+	    metaselector->addTriangleSelector(selector);
+	}
+    }
+
 
     //ajout santaclaus à la scene
     is::IAnimatedMeshSceneNode *node_santaclaus;
     node_santaclaus = smgr->addAnimatedMeshSceneNode(mesh_santaclaus);
     node_santaclaus->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-    node_santaclaus->setPosition(core::vector3df(20, 2, 30));
+    node_santaclaus->setPosition(core::vector3df(20,2,60)); //20, 2, 30));
     textures.push_back(driver->getTexture("data/Santa.png"));
     node_santaclaus->setMaterialTexture(0, textures.back());
     node_santaclaus->setScale(core::vector3df(0.5,0.5,0.5));
     receiver.set_node(node_santaclaus);
     receiver.set_textures(textures);
-
-
-
-
-
-
-
 
     receiver.set_gui(gui_game);
 
@@ -126,8 +144,14 @@ int main()
     anim = smgr ->createCollisionResponseAnimator(metaselector, node_santaclaus,
                                                   ic::vector3df(1, 1, 1), //Rayon de la cam
                                                   ic::vector3df(0, -10, 0),  //gravité
-                                                  ic::vector3df(0, 0, 0));  // décalage du centre
+						  ic::vector3df(0, 0, 0));  // décalage du centre
+
     node_santaclaus->addAnimator(anim);
+
+    //gestionnaire de collision "Selection"
+
+     is::ISceneCollisionManager *collision_manager = smgr->getSceneCollisionManager();
+
 
     //caméra qui va suivre notre personnage
 
@@ -187,6 +211,28 @@ int main()
 
         driver->beginScene(true, true, iv::SColor(0,50,100,255));
 
+	//Séléction de l'arbre à couper avec la souris
+	int mouse_x, mouse_y;
+	if (receiver.is_mouse_pressed(mouse_x, mouse_y))
+	{
+	  ic::line3d<f32> ray;
+	  ray = collision_manager->getRayFromScreenCoordinates(ic::position2d<s32>(mouse_x, mouse_y));
+
+	  ic::vector3df intersection;
+	  ic::triangle3df hit_triangle;
+
+	  is::ISceneNode *selected_scene_node = collision_manager->getSceneNodeAndCollisionPointFromRay(ray,
+													intersection, // On récupère ici les coordonnées 3D de l'intersection
+													hit_triangle, // et le triangle intersecté
+													ID); // On ne veut que des noeuds avec cet identifiant
+
+	  //on supprime les arbres
+	  if (selected_scene_node)
+	  {
+	    selected_scene_node->setVisible(false);
+	  }
+
+	}
 
         // Dessin de la scène :
         smgr->drawAll();
@@ -195,7 +241,7 @@ int main()
 
         //gestion Début de Jeu
         //affichage d'une image de debut
-        if( pos.X == 20 && pos.Z == 30)
+	if( pos.X == 20 && pos.Z == 60)
         {
 
 
@@ -238,7 +284,7 @@ int main()
     return 0;
 }
 
-is::ITriangleSelector* createTree(is::IAnimatedMesh *mesh, is::ISceneManager *smgr, EventReceiver receiver, iv::IVideoDriver  *driver)
+/*is::ITriangleSelector* createTree(is::IAnimatedMesh *mesh, is::ISceneManager *smgr, EventReceiver receiver, iv::IVideoDriver  *driver)
 {
     std::vector<iv::ITexture*> textures;
     is::IAnimatedMeshSceneNode *node_arbre;
@@ -269,7 +315,7 @@ is::ITriangleSelector* createTree(is::IAnimatedMesh *mesh, is::ISceneManager *sm
     }
 
     return metaselector;
-}
+}*/
 
 //Create a moutain
 is::ITriangleSelector* createMountain(int nbMountains, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver)
