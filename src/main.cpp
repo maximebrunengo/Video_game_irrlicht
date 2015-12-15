@@ -14,6 +14,9 @@ is::ITriangleSelector* createTree(is::IAnimatedMesh *mesh, is::ISceneManager *sm
 is::ITriangleSelector*  createColumn(int position_x, int position_z, int height, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver);
 is::ITriangleSelector* createMountain(int nbMountains, is::IAnimatedMeshSceneNode *node, is::IAnimatedMesh *mesh, is::ISceneManager *smgr, std::vector<iv::ITexture*> textures, EventReceiver receiver);
 
+const int ID = 40;
+const int cpt = 0;
+
 int main()
 {
     // Le gestionnaire d'événements
@@ -110,6 +113,8 @@ int main()
 	    //selector sur l'arbre
 	    is::ITriangleSelector *selector = smgr->createTriangleSelector(mesh_tree,node_tree);
 	    node_tree->setTriangleSelector(selector);
+	    selector->drop();
+	    node_tree->setID(ID);
 
 	    metaselector->addTriangleSelector(selector);
 	}
@@ -138,6 +143,11 @@ int main()
 
     node_santaclaus->addAnimator(anim);
 
+    //gestionnaire de collision "Selection"
+
+     is::ISceneCollisionManager *collision_manager = smgr->getSceneCollisionManager();
+
+
     //caméra qui va suivre notre personnage
 
     //son parent est donc le noeud qui definit le personnage
@@ -153,6 +163,30 @@ int main()
     {
 
         driver->beginScene(true, true, iv::SColor(0,50,100,255));
+
+	//Séléction de l'arbre à couper avec la souris
+	int mouse_x, mouse_y;
+	if (receiver.is_mouse_pressed(mouse_x, mouse_y))
+	{
+	  ic::line3d<f32> ray;
+	  ray = collision_manager->getRayFromScreenCoordinates(ic::position2d<s32>(mouse_x, mouse_y));
+
+	  ic::vector3df intersection;
+	  ic::triangle3df hit_triangle;
+
+	  is::ISceneNode *selected_scene_node = collision_manager->getSceneNodeAndCollisionPointFromRay(ray,
+													intersection, // On récupère ici les coordonnées 3D de l'intersection
+													hit_triangle, // et le triangle intersecté
+													ID); // On ne veut que des noeuds avec cet identifiant
+
+	  //on supprime les arbres
+	  if (selected_scene_node)
+	  {
+	    selected_scene_node->setVisible(false);
+	    cpt ++;
+	  }
+
+	}
 
         // Dessin de la scène :
         smgr->drawAll();
