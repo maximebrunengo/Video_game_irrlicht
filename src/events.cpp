@@ -64,6 +64,7 @@ bool EventReceiver::keyboard(const SEvent &event)
     //mise a jour de la target de la camera (suivi du personnage en temps réel)
     camera->setTarget(position);
 
+
   }
 
   return false;

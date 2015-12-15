@@ -1,6 +1,7 @@
 #include <irrlicht.h>
 #include "events.h"
 #include "gui_game.h"
+#include <iostream>
 
 using namespace irr;
 
@@ -117,6 +118,7 @@ int main()
 
 
 
+
     receiver.set_gui(gui_game);
 
     //Gestion collision
@@ -135,20 +137,100 @@ int main()
     is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_santaclaus, ic::vector3df(20,10,0), node_santaclaus->getPosition());
     receiver.set_camera(camera);
 
+
+    /*
+     *
+     * Tempete de neige, fait appel à la création particulaire
+     * special thanks :) http://jeux.developpez.com/tutoriels/Irrlicht/8-effets-speciaux/
+     **/
+
+      // crée un système de particule
+
+          is::IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(true);
+
+          is::IParticleEmitter* em = ps->createBoxEmitter(
+              ic::aabbox3d<f32>(0,20,0,10,0,30), // taille de l'émetteur
+              ic::vector3df(0.0f,0.0f,0.0f),   // position initiale
+              80,20,                             // taux d'émission
+              iv::SColor(0,0,0,0),       // la couleur la plus sombre
+              iv::SColor(0,255,255,255),       // la couleur la plus lumineuse
+              100,200,0,                         // minimum et maximum âge, angle  ICI on choisi des valeurs mini et maxi faibles pour voir au travers de la tempete mais linconvenient c'est la rapidite des la neige
+              ic::dimension2df(10.f,10.f),         // taille minimum
+              ic::dimension2df(20.f,20.f));        // taille maximum
+
+          ps->setEmitter(em); // Ceci prend l'émetteur
+          em->drop(); // Donc on peut le jeter sans qu'il soit supprimé.
+
+          is::IParticleAffector* paf = ps->createFadeOutParticleAffector();
+
+          ps->addAffector(paf); // de même pour l'affecteur
+          paf->drop();
+
+          ps->setPosition(core::vector3df(0,0,0));
+          ps->setScale(core::vector3df(2,2,2));
+          ps->setMaterialFlag(video::EMF_LIGHTING, false);
+          ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+          ps->setMaterialTexture(0, driver->getTexture("data/7.jpg"));
+          ps->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+
     // La barre de menu
     gui_game::create_menu(gui_game);
+
+    //declaration du vecteur position necessaire a la gestion du game over
+    ic::vector3df pos;
+    iv::ITexture* image_gameover = driver->getTexture("data/gameover.jpg");
+   iv::ITexture* image_start = driver->getTexture("data/Start.png");
+
 
     while(device->run())
     {
 
         driver->beginScene(true, true, iv::SColor(0,50,100,255));
 
+
         // Dessin de la scène :
         smgr->drawAll();
         // Dessin de l'interface utilisateur :
         gui_game->drawAll();
 
+        //gestion Début de Jeu
+        //affichage d'une image de debut
+        if( pos.X == 20 && pos.Z == 30)
+        {
+
+
+            driver->draw2DImage(image_start, core::position2d<s32>(80,80),
+                         core::rect<s32>(0,0,480,271), 0,
+                         video::SColor(255,255,255,255), true);
+
+
+
+        }
+
+
+
+        //game over "sortie du plateau de jeu"
+        //on peut le rendre plus robuste en ragardant les limites x et z du plateau
+        //ICI j'utilise l'altitude du personnage
+
+        //mise a jour de la postion du personnage  en continu
+        pos = node_santaclaus->getPosition();
+        if (pos.Y < -5) //condition de game over
+        {
+            std::cout<<"GAME oVER"<<std::endl;
+            driver->draw2DImage(image_gameover, core::position2d<s32>(80,80),
+                         core::rect<s32>(0,0,480,360), 0,
+                         video::SColor(255,255,255,255), true);
+
+            if(pos.Y < -100) exit(0); //on quite le jeu
+            // Amelioration: a la placve de quiter le jeu on attend un clique souris ou clavier pour se remmetre en position initiale
+
+
+        }
+
         driver->endScene();
+
+
 
     }
     device->drop();
@@ -250,5 +332,4 @@ is::ITriangleSelector* createColumn(int position_x, int position_z, int height, 
     }
     return metaselector;
 }
-
 
