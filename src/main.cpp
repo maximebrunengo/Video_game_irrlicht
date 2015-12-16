@@ -29,8 +29,8 @@ int main()
 
     // Création de la fenêtre et du système de rendu.
     IrrlichtDevice *device = createDevice(iv::EDT_OPENGL,
-                                          ic::dimension2d<u32>(640, 480),
-                                          16, false, false, false, &receiver);
+					  ic::dimension2d<u32>(640, 480),
+					  16, false, false, false, &receiver);
 
     is::ISceneManager *smgr = device->getSceneManager();
     iv::IVideoDriver  *driver = device->getVideoDriver();
@@ -40,7 +40,7 @@ int main()
     textures.push_back(driver->getTexture("data/TXsQk.png"));
 
     // Chargement du cube
-   is::IAnimatedMesh *mesh = smgr->getMesh("data/cube.obj");
+    is::IAnimatedMesh *mesh = smgr->getMesh("data/cube.obj");
 
     //chargement du santaclaus
     is::IAnimatedMesh *mesh_santaclaus = smgr->getMesh("data/Steve.obj");
@@ -57,32 +57,32 @@ int main()
 
     for (int i = 0 ; i < Ni ; i ++)
     {
-        for (int j = 0 ; j < Nj ; j ++)
-        {
-            node = smgr->addAnimatedMeshSceneNode(mesh,nullptr,i+j);
-            node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-            node->setPosition (core::vector3df(i,0,j));
+	for (int j = 0 ; j < Nj ; j ++)
+	{
+	    node = smgr->addAnimatedMeshSceneNode(mesh,nullptr,i+j);
+	    node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	    node->setPosition (core::vector3df(i,0,j));
 
-            textures.push_back(driver->getTexture("data/TXsQk.png"));
-            node->setMaterialTexture(0, textures[0]);
-            receiver.set_node(node);
-            receiver.set_textures(textures);
+	    textures.push_back(driver->getTexture("data/TXsQk.png"));
+	    node->setMaterialTexture(0, textures[0]);
+	    receiver.set_node(node);
+	    receiver.set_textures(textures);
 
-            // Création du triangle selector pour gérer la collision
-            is::ITriangleSelector *selector = smgr->createTriangleSelector(node->getMesh(),node);
-            node ->setTriangleSelector (selector);
+	    // Création du triangle selector pour gérer la collision
+	    is::ITriangleSelector *selector = smgr->createTriangleSelector(node->getMesh(),node);
+	    node ->setTriangleSelector (selector);
 
-            //meta selector permettant de stocker les selecteurs de tous mes cubes
-            metaselector->addTriangleSelector(selector);
+	    //meta selector permettant de stocker les selecteurs de tous mes cubes
+	    metaselector->addTriangleSelector(selector);
 
-        }
+	}
     }
 
     //is::ITriangleSelector* selector1 = createTree(mesh, smgr,receiver,driver);
     //metaselector->addTriangleSelector(selector1);
 
     //Ajout de reliefs sur la scene
-    int nbMountains = 2;
+    int nbMountains = 3;
     is::ITriangleSelector* selector2 = createMountain(nbMountains, node, mesh, smgr, textures, receiver);
     metaselector->addTriangleSelector(selector2);
 
@@ -106,7 +106,7 @@ int main()
     for (int l=0; l<Nl; l++)
     {
 	for (int k=0; k<Nk; k++)
-	{	     
+	{
 	    pos_x = rand()%Nl + 8*l;
 	    pos_y = rand()%Nk + 5*k;
 
@@ -143,15 +143,15 @@ int main()
     //Gestion collision
     is::ISceneNodeAnimator *anim;
     anim = smgr ->createCollisionResponseAnimator(metaselector, node_santaclaus,
-                                                  ic::vector3df(1, 1, 1), //Rayon de la cam
-                                                  ic::vector3df(0, -10, 0),  //gravité
+						  ic::vector3df(1, 1, 1), //Rayon de la cam
+						  ic::vector3df(0, -10, 0),  //gravité
 						  ic::vector3df(0, 0, 0));  // décalage du centre
 
     node_santaclaus->addAnimator(anim);
 
     //gestionnaire de collision "Selection"
 
-     is::ISceneCollisionManager *collision_manager = smgr->getSceneCollisionManager();
+    is::ISceneCollisionManager *collision_manager = smgr->getSceneCollisionManager();
 
 
     //caméra qui va suivre notre personnage
@@ -159,44 +159,41 @@ int main()
     //son parent est donc le noeud qui definit le personnage
     //deuxieme paramètre:position de la camera (look From)
     //troisieme paramètre: look at (ici c'est la position du personnage) mise a jour dans event.cpp
+
     is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_santaclaus, ic::vector3df(20,10,0), node_santaclaus->getPosition());
-    receiver.set_camera(camera);
 
-
-    /*
-     *
-     * Tempete de neige, fait appel à la création particulaire
+     /* Tempete de neige, fait appel à la création particulaire
      * special thanks :) http://jeux.developpez.com/tutoriels/Irrlicht/8-effets-speciaux/
      **/
 
-      // crée un système de particule
+    // crée un système de particule
 
-          is::IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(true);
+    is::IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(true);
 
-          is::IParticleEmitter* em = ps->createBoxEmitter(
-              ic::aabbox3d<f32>(0,20,0,10,0,30), // taille de l'émetteur
-              ic::vector3df(0.0f,0.0f,0.0f),   // position initiale
-              80,20,                             // taux d'émission
-              iv::SColor(0,0,0,0),       // la couleur la plus sombre
-              iv::SColor(0,255,255,255),       // la couleur la plus lumineuse
-              100,200,0,                         // minimum et maximum âge, angle  ICI on choisi des valeurs mini et maxi faibles pour voir au travers de la tempete mais linconvenient c'est la rapidite des la neige
-              ic::dimension2df(10.f,10.f),         // taille minimum
-              ic::dimension2df(20.f,20.f));        // taille maximum
+    is::IParticleEmitter* em = ps->createBoxEmitter(
+		ic::aabbox3d<f32>(0,20,0,10,0,30), // taille de l'émetteur
+		ic::vector3df(0.0f,0.0f,0.0f),   // position initiale
+		80,20,                             // taux d'émission
+		iv::SColor(0,0,0,0),       // la couleur la plus sombre
+		iv::SColor(0,255,255,255),       // la couleur la plus lumineuse
+		100,200,0,                         // minimum et maximum âge, angle  ICI on choisi des valeurs mini et maxi faibles pour voir au travers de la tempete mais linconvenient c'est la rapidite des la neige
+		ic::dimension2df(10.f,10.f),         // taille minimum
+		ic::dimension2df(20.f,20.f));        // taille maximum
 
-          ps->setEmitter(em); // Ceci prend l'émetteur
-          em->drop(); // Donc on peut le jeter sans qu'il soit supprimé.
+    ps->setEmitter(em); // Ceci prend l'émetteur
+    em->drop(); // Donc on peut le jeter sans qu'il soit supprimé.
 
-          is::IParticleAffector* paf = ps->createFadeOutParticleAffector();
+    is::IParticleAffector* paf = ps->createFadeOutParticleAffector();
 
-          ps->addAffector(paf); // de même pour l'affecteur
-          paf->drop();
+    ps->addAffector(paf); // de même pour l'affecteur
+    paf->drop();
 
-          ps->setPosition(core::vector3df(0,0,0));
-          ps->setScale(core::vector3df(2,2,2));
-          ps->setMaterialFlag(video::EMF_LIGHTING, false);
-          ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
-          ps->setMaterialTexture(0, driver->getTexture("data/7.jpg"));
-          ps->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+    ps->setPosition(core::vector3df(0,0,0));
+    ps->setScale(core::vector3df(2,2,2));
+    ps->setMaterialFlag(video::EMF_LIGHTING, false);
+    ps->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+    ps->setMaterialTexture(0, driver->getTexture("data/7.jpg"));
+    ps->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
 
     // La barre de menu
     gui_game::create_menu(gui_game);
@@ -212,79 +209,84 @@ int main()
     while(device->run())
     {
 
-        driver->beginScene(true, true, iv::SColor(0,50,100,255));
+	driver->beginScene(true, true, iv::SColor(0,50,100,255));
+
+	receiver.set_camera(camera);
+
+	//on récupère la postion du personnage  en continu
+	pos = node_santaclaus->getPosition();
+
+	camera->setTarget(pos);
 
 	//Séléction de l'arbre à couper avec la souris
 	int mouse_x, mouse_y;
 	if (receiver.is_mouse_pressed(mouse_x, mouse_y))
 	{
-	  ic::line3d<f32> ray;
-	  ray = collision_manager->getRayFromScreenCoordinates(ic::position2d<s32>(mouse_x, mouse_y));
+	    ic::line3d<f32> ray;
+	    ray = collision_manager->getRayFromScreenCoordinates(ic::position2d<s32>(mouse_x, mouse_y));
 
-	  ic::vector3df intersection;
-	  ic::triangle3df hit_triangle;
+	    ic::vector3df intersection;
+	    ic::triangle3df hit_triangle;
 
-	  is::ISceneNode *selected_scene_node = collision_manager->getSceneNodeAndCollisionPointFromRay(ray,
-													intersection, // On récupère ici les coordonnées 3D de l'intersection
-													hit_triangle, // et le triangle intersecté
-													ID); // On ne veut que des noeuds avec cet identifiant
+	    is::ISceneNode *selected_scene_node = collision_manager->getSceneNodeAndCollisionPointFromRay(ray,
+													  intersection, // On récupère ici les coordonnées 3D de l'intersection
+													  hit_triangle, // et le triangle intersecté
+													  ID); // On ne veut que des noeuds avec cet identifiant
 
-	  //on supprime les arbres
-	  if (selected_scene_node)
-	  {
-	    selected_scene_node->setVisible(false);
-        compteur_arbres_coupes ++;
-	  }
+	    //on supprime les arbres
+	    if (selected_scene_node)
+	    {
+		selected_scene_node->setVisible(false);
+		compteur_arbres_coupes ++;
+	    }
 
 	}
 
-        // Dessin de la scène :
-        smgr->drawAll();
-        // Dessin de l'interface utilisateur :
-        gui_game->drawAll();
+	// Dessin de la scène :
+	smgr->drawAll();
+	// Dessin de l'interface utilisateur :
+	gui_game->drawAll();
 
-        //gestion Début de Jeu
+	//gestion Début de Jeu
 
-        //affichage d'une image de debut
+	//affichage d'une image de debut
 	if( pos.X == 20 && pos.Z == 60)
-        {
-            driver->draw2DImage(image_start, core::position2d<s32>(80,80),
-                         core::rect<s32>(0,0,480,271), 0,
-                         video::SColor(255,255,255,255), true);
-        }
+	{
+	    driver->draw2DImage(image_start, core::position2d<s32>(80,80),
+				core::rect<s32>(0,0,480,271), 0,
+				video::SColor(255,255,255,255), true);
+	}
 
 
-        //game over "sortie du plateau de jeu"
+	//game over "sortie du plateau de jeu"
 
-        //on peut le rendre plus robuste en ragardant les limites x et z du plateau
-        //ICI j'utilise l'altitude du personnage
+	//on peut le rendre plus robuste en ragardant les limites x et z du plateau
+	//ICI j'utilise l'altitude du personnage
 
-        //mise a jour de la postion du personnage  en continu
-        pos = node_santaclaus->getPosition();
-        if (pos.Y < -5) //condition de game over
-        {
-            std::cout<<"GAME oVER"<<std::endl;
-            driver->draw2DImage(image_gameover, core::position2d<s32>(80,80),
-                         core::rect<s32>(0,0,480,360), 0,
-                         video::SColor(255,255,255,255), true);
+	if (pos.Y < -5) //condition de game over
+	{
+	    std::cout<<"GAME oVER"<<std::endl;
+	    driver->draw2DImage(image_gameover, core::position2d<s32>(80,80),
+				core::rect<s32>(0,0,480,360), 0,
+				video::SColor(255,255,255,255), true);
 
-            if(pos.Y < -100) exit(0); //on quite le jeu
-            // Amelioration: a la placve de quiter le jeu on attend un clique souris ou clavier pour se remmetre en position initiale
-        }
+	    if(pos.Y < -100) exit(0); //on quitte le jeu
+	    // Amelioration: a la place de quitter le jeu on attend un clique souris ou clavier pour se remmetre en position initiale
+	}
 
-        //WIN
+	//WIN
 
-        //Vous avez assez coupé d'arbres pour construire le traineau
+	//Vous avez assez coupé d'arbres pour construire le traineau
 
-        if(compteur_arbres_coupes == 12)
-        {
-            driver->draw2DImage(image_win, core::position2d<s32>(80,80),
-                         core::rect<s32>(0,0,800,600), 0,
-                         video::SColor(255,255,255,255), true);
+	if(compteur_arbres_coupes == 12)
+	{
+	    driver->draw2DImage(image_win, core::position2d<s32>(80,80),
+				core::rect<s32>(0,0,800,600), 0,
+				video::SColor(255,255,255,255), true);
 
-        }
+	}
 
-        driver->endScene();
+	driver->endScene();
 
 
 
@@ -304,24 +306,24 @@ int main()
     is::ITriangleSelector *selector;
     is::IMetaTriangleSelector *
 
-            metaselector = smgr-> createMetaTriangleSelector();;
+	    metaselector = smgr-> createMetaTriangleSelector();;
 
     for (int k = 0 ; k < 15 ; k ++)
     {
-        node_arbre = smgr->addAnimatedMeshSceneNode(mesh,nullptr,i+j+k);
-        node_arbre->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-        node_arbre->setPosition (core::vector3df(i,k,j));
-        textures.push_back(driver->getTexture("data/tree.jpg"));
-        node_arbre->setMaterialTexture(0, textures[0]);
-        //node_arbre->setDebugDataVisible(is::EDS_BBOX | is::EDS_HALF_TRANSPARENCY);
-        receiver.set_node(node_arbre);
-        receiver.set_textures(textures);
+	node_arbre = smgr->addAnimatedMeshSceneNode(mesh,nullptr,i+j+k);
+	node_arbre->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	node_arbre->setPosition (core::vector3df(i,k,j));
+	textures.push_back(driver->getTexture("data/tree.jpg"));
+	node_arbre->setMaterialTexture(0, textures[0]);
+	//node_arbre->setDebugDataVisible(is::EDS_BBOX | is::EDS_HALF_TRANSPARENCY);
+	receiver.set_node(node_arbre);
+	receiver.set_textures(textures);
 
-        // Création du triangle selector pour gérer la collision
-        selector = smgr->createTriangleSelector(node_arbre->getMesh(),node_arbre);
-        node_arbre ->setTriangleSelector (selector);
+	// Création du triangle selector pour gérer la collision
+	selector = smgr->createTriangleSelector(node_arbre->getMesh(),node_arbre);
+	node_arbre ->setTriangleSelector (selector);
 
-        metaselector->addTriangleSelector(selector);
+	metaselector->addTriangleSelector(selector);
     }
 
     return metaselector;
@@ -338,28 +340,28 @@ is::ITriangleSelector* createMountain(int nbMountains, is::IAnimatedMeshSceneNod
 
     for(int i = 0; i<nbMountains; ++i)
     {
-        int delta_max = 20;
-        int delta = delta_max;
-        int height = 1;
-        // Get a random position for the lowest left point of the mountain
-        int position_x = rand()%Ni;
-        int position_z = rand()%Nj;
-        while(delta>2)
-        {
-            for (int x=position_x; x<position_x+delta; ++x)
-            {
-                for(int z=position_z; z<position_z+delta; ++z)
-                {
-                    selector = createColumn(x, z, height, node, mesh, smgr, textures, receiver);
+	int delta_max = 20;
+	int delta = delta_max;
+	int height = 1;
+	// Get a random position for the lowest left point of the mountain
+	int position_x = rand()%(Ni)+i*2;
+	int position_z = rand()%(Nj)+i*10;
+	while(delta>2)
+	{
+	    for (int x=position_x; x<position_x+delta; ++x)
+	    {
+		for(int z=position_z; z<position_z+delta; ++z)
+		{
+		    selector = createColumn(x, z, height, node, mesh, smgr, textures, receiver);
 
-                    metaselector->addTriangleSelector(selector);
-                }
-            }
-            position_x++;
-            position_z++;
-            height++;
-            delta-=2;
-        }
+		    metaselector->addTriangleSelector(selector);
+		}
+	    }
+	    position_x++;
+	    position_z++;
+	    height++;
+	    delta-=2;
+	}
     }
     return metaselector;
 }
@@ -373,18 +375,18 @@ is::ITriangleSelector* createColumn(int position_x, int position_z, int height, 
 
     for(int i=1; i<height; ++i)
     {
-        node = smgr->addAnimatedMeshSceneNode(mesh, nullptr, position_x+i+position_z);
-        node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-        node->setPosition (core::vector3df(position_x, i, position_z));
+	node = smgr->addAnimatedMeshSceneNode(mesh, nullptr, position_x+i+position_z);
+	node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	node->setPosition (core::vector3df(position_x, i, position_z));
 
-        node->setMaterialTexture(0, textures[0]);
-        receiver.set_node(node);
-        receiver.set_textures(textures);
+	node->setMaterialTexture(0, textures[0]);
+	receiver.set_node(node);
+	receiver.set_textures(textures);
 
-        selector = smgr->createTriangleSelector(node->getMesh(),node);
-        node ->setTriangleSelector (selector);
+	selector = smgr->createTriangleSelector(node->getMesh(),node);
+	node ->setTriangleSelector (selector);
 
-        metaselector->addTriangleSelector(selector);
+	metaselector->addTriangleSelector(selector);
     }
     return metaselector;
 }
