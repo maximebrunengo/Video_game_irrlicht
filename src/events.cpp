@@ -54,7 +54,7 @@ bool EventReceiver::keyboard(const SEvent &event)
     // Une fenêtre pour différents réglages
     //create_window(gui);
     break;
-    case KEY_SPACE:
+    case KEY_SPACE:// Saut
         position.Y +=10;
     break;
       default:;
