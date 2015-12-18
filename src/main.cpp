@@ -104,16 +104,6 @@ int main()
     is::ITriangleSelector* selector2 = createMountain(nbMountains, node, mesh, smgr, textures, receiver);
     metaselector->addTriangleSelector(selector2);
 
-    // Ajout du cube à la scène
-    /*is::IAnimatedMeshSceneNode *node_personnage;
-    node_personnage = smgr->addAnimatedMeshSceneNode(mesh);
-    node_personnage->setPosition(core::vector3df(20, 10, 20));
-    textures.push_back(driver->getTexture("data/rouge.jpg"));
-    node_personnage->setMaterialTexture(0, textures.back());
-    node_personnage->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-    receiver.set_node(node_personnage);
-    receiver.set_textures(textures);*/
-
     //ajout tree (ou une forêt)  à la scene
     is::IAnimatedMeshSceneNode *node_tree;
     int Nl = 7;
@@ -125,7 +115,7 @@ int main()
     {
         for (int k=0; k<Nk; k++)
         {
-            pos_x = rand()%Nl + 8*l;
+	    pos_x = rand()%Nl + 6*l;
             pos_y = rand()%Nk + 5*k;
 
             node_tree = smgr->addAnimatedMeshSceneNode(mesh_tree,nullptr, l+k);
@@ -168,12 +158,10 @@ int main()
     node_santaclaus->addAnimator(anim);
 
     //gestionnaire de collision "Selection"
-
     is::ISceneCollisionManager *collision_manager = smgr->getSceneCollisionManager();
 
 
     //caméra qui va suivre notre personnage
-
     //son parent est donc le noeud qui definit le personnage
     //deuxieme paramètre:position de la camera (look From)
     //troisieme paramètre: look at (ici c'est la position du personnage) mise a jour dans event.cpp
@@ -181,11 +169,10 @@ int main()
     is::ICameraSceneNode *camera = smgr->addCameraSceneNode(node_santaclaus, ic::vector3df(20,10,0), node_santaclaus->getPosition());
 
     /* Tempete de neige, fait appel à la création particulaire
-     * special thanks :) http://jeux.developpez.com/tutoriels/Irrlicht/8-effets-speciaux/
+     *  special thanks :) http://jeux.developpez.com/tutoriels/Irrlicht/8-effets-speciaux/
      **/
 
     // crée un système de particule
-
     is::IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(true);
 
     is::IParticleEmitter* em = ps->createBoxEmitter(
@@ -347,6 +334,7 @@ int main()
     return 0;
 }
 
+//Création d'arbre initialement faite avec un empilement de cube
 /*is::ITriangleSelector* createTree(is::IAnimatedMesh *mesh, is::ISceneManager *smgr, EventReceiver receiver, iv::IVideoDriver  *driver)
 {
     std::vector<iv::ITexture*> textures;
@@ -395,8 +383,8 @@ is::ITriangleSelector* createMountain(int nbMountains, is::IAnimatedMeshSceneNod
         int delta = delta_max;
         int height = 1;
         // Get a random position for the lowest left point of the mountain
-        int position_x = rand()%(Ni)+i*2;
-        int position_z = rand()%(Nj)+i*10;
+	int position_x = rand()%(Ni)- 23;
+	int position_z = rand()%(Nj) - 4;
         while(delta>2)
         {
             for (int x=position_x; x<position_x+delta; ++x)
